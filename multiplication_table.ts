@@ -1,17 +1,19 @@
-export function printMultiplicationTable(numbers: Array<number>) {
-  // first, let's figure out the biggest value
+export function calculateColumnWidth(numbers: Array<number>): number {
+  if (numbers.length === 0) return 0;
   const biggest = numbers.reduce((acc, n) => (n > acc ? n : acc));
-
-  // then, find the biggest possible result to compute its magnitude
   let biggestResult = biggest * biggest;
   let magnitude = 0;
   while (biggestResult > 0) {
     magnitude++;
     biggestResult = Math.round(biggestResult / 10);
   }
-  magnitude++; // add an additional space for the width
+  magnitude++;
+  return magnitude;
+}
 
-  // finally, calculate and output the nicely formatted multiplication table
+export function generateTableString(numbers: Array<number>): string {
+  const magnitude = calculateColumnWidth(numbers);
+  const lines: string[] = [];
   let titleRow = "*";
   while (titleRow.length < magnitude) {
     titleRow = " " + titleRow;
@@ -24,12 +26,12 @@ export function printMultiplicationTable(numbers: Array<number>) {
     }
     titleRow += `${cell} |`;
   }
-  console.log(titleRow);
+  lines.push(titleRow);
   let sep = "";
   for (let i = 0; i < titleRow.length; i++) {
     sep += "=";
   }
-  console.log(sep);
+  lines.push(sep);
   for (const n of numbers) {
     let row = `${n}`;
     while (row.length < magnitude) {
@@ -45,6 +47,12 @@ export function printMultiplicationTable(numbers: Array<number>) {
       cell += " |";
       row += cell;
     }
-    console.log(row);
+    lines.push(row);
   }
+  return lines.join("\n");
+}
+
+export function printMultiplicationTable(numbers: Array<number>) {
+  const output = generateTableString(numbers);
+  console.log(output);
 }
